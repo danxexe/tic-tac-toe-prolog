@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+swipl -s tictactoe.pl -g tictactoe:main. -t halt --no-signals

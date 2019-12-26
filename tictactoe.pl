@@ -1,4 +1,9 @@
-#!/usr/bin/env swipl
+:- module(tictatoe, [
+  main/0,
+  initial_state/1,
+  win/2,
+  play/4
+]).
 
 initial_state(S) :-
   S = [
@@ -117,14 +122,12 @@ instructions :-
 
 %% main loop
 
-:- initialization(main).
-
-main(Argv) :-
+main :-
   instructions,
   initial_state(S0),
-  main(Argv, S0).
+  main(S0).
 
-main(_Argv, S0) :-
+main(S0) :-
   loop_read_player("X", S0, S1),
   (display_winner(S1, S1) ;
     loop_read_player("O", S1, S2),
@@ -148,18 +151,3 @@ read_player(P, Pos) :-
 
 eval_move(Move) :-
   dif(Move, end) -> true ; halt.
-
-%% simulate a game
-
-simulate :-
-  initial_state(S0),
-  foldl(call, [
-    play("X", middle-center),
-    play("O", top-right),
-    play("X", top-left),
-    play("O", middle-right),
-    play("X", bottom-right),
-    display,
-    display_winner,
-    =
-  ], S0, _Out), !.
