@@ -5,6 +5,26 @@
   play/4
 ]).
 
+:- use_module(library(dif)).
+% :- ( \+ current_predicate(between/3) ->
+%        % Predicate is not defined, so import the module
+%        use_module(library(between))
+%    ; true % Predicate is already defined, do nothing
+% ).
+:- use_module(library(between)).
+:- use_module(library(lists)).
+
+:- set_prolog_flag(double_quotes, atom).
+
+atomics_to_string([], _, "").
+atomics_to_string([Atom], _, Atom).
+atomics_to_string([Head|Tail], Separator, ResultingAtom) :-
+  atomics_to_string(Tail, Separator, TailString),
+  atom_concat(Head, Separator, HeadSeparator),
+  atom_concat(HeadSeparator, TailString, ResultingAtom).
+
+writeln(T) :- write(T), nl.
+
 initial_state(S) :-
   S = [
     [" "," "," "],
@@ -93,7 +113,8 @@ display(State, State) :-
 
 display_winner(State, State) :-
   win(State, W),
-  write("Winner: "), write(W), nl, nl, nl.
+  write("Winner: "), write(W), nl, nl, nl,
+  halt.
 
 render(Rows, Out) :-
   maplist(render_row, Rows, RowsOut),
@@ -151,3 +172,5 @@ read_player(P, Pos) :-
 
 eval_move(Move) :-
   dif(Move, end) -> true ; halt.
+
+:- initialization(main).
